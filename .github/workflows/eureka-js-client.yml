@@ -1,0 +1,101 @@
+name: CI & Release
+
+on:
+  push:
+    branches: [ octorelease ]
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  test:
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+
+    concurrency:
+      group: ${{ matrix.os }}-node-${{ matrix.node-version }}-ci-${{ github.ref }}
+      cancel-in-progress: true
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20.x, 22.x, 24.x]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Disable Lint Annotations
+        run: |
+          echo "::remove-matcher owner=eslint-compact::"
+          echo "::remove-matcher owner=eslint-stylish::"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Source
+        id: build
+        run: npm run prepublish
+
+      - name: Unit Tests
+        if: ${{ always() && steps.build.outcome == 'success' }}
+        run: npm run test
+
+      - name: Archive Results
+        id: upload
+        if: ${{ always() && steps.build.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-${{ matrix.node-version }}-results
+          path: |
+            coverage/
+
+  release:
+    if: github.event_name == 'push' && github.ref_protected
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+        ref: ${{ github.ref }}
+
+    - name: Use Node LTS
+      uses: actions/setup-node@v4
+      with:
+        node-version: 'lts/*'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Build Source
+      run: npm run prepublish
+
+    # - name: Release with octorelease
+    #   uses: zowe-actions/octorelease@v1
+    #   env:
+    #     GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
+    #     GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+    #     GIT_CREDENTIALS: x-access-token:${{ secrets.ZOWE_ROBOT_TOKEN }}
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     NPM_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+    #     NPM_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+    #     NPM_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
