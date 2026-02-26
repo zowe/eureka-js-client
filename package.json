@@ -9,6 +9,9 @@
     "integration": "gulp test:integration",
     "coveralls": "cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
+  "publishConfig": {
+    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/zowe/eureka-js-client.git"
@@ -48,7 +51,13 @@
     "gulp-istanbul": "^1.0.0",
     "gulp-mocha": "^3.0.0",
     "sinon": "^1.15.4",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "@octorelease/changelog": "^1.0.0",
+    "@octorelease/commit-analyzer": "^1.0.0",
+    "@octorelease/git": "^1.0.0",
+    "@octorelease/github": "^1.0.0",
+    "@octorelease/npm": "^1.0.0",
+    "@octorelease/release-notes-generator": "^1.0.0"
   },
   "greenkeeper": {
     "ignore": [
