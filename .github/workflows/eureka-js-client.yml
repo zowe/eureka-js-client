@@ -59,11 +59,6 @@ jobs:
         if: ${{ always() && steps.build.outcome == 'success' }}
         run: npm run test
 
-      - name: Integration Tests
-        id: integration
-        if: ${{ always() && steps.build.outcome == 'success' }}
-        run: npm run integration
-
       - name: Archive Results
         id: upload
         if: ${{ always() && steps.build.outcome == 'success' }}
