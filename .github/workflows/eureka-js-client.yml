@@ -59,21 +59,6 @@ jobs:
         if: ${{ always() && steps.build.outcome == 'success' }}
         run: npm run test
 
-      - name: Archive Results
-        id: upload
-        if: ${{ always() && steps.build.outcome == 'success' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.os }}-${{ matrix.node-version }}-results
-          path: |
-            coverage/
-
-      - name: Coveralls
-        id: coveralls
-        # coveralls step uses `cat` on the coverage file, so skip on Windows runners
-        if: ${{ always() && steps.build.outcome == 'success' && matrix.os != 'windows-latest' }}
-        run: npm run coveralls
-
   release:
     if: github.event_name == 'push' && github.ref_protected
     needs: test
