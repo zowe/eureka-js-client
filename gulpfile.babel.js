@@ -2,7 +2,7 @@ import gulp from 'gulp';
 import babel from 'gulp-babel';
 import mocha from 'gulp-mocha';
 import eslint from 'gulp-eslint';
-import { Instrumenter } from 'babel-istanbul';
+import { Instrumenter } from 'nyc';
 import istanbul from 'gulp-istanbul';
 import env from 'gulp-env';
 import request from 'request';
@@ -87,15 +87,15 @@ gulp.task('docker:run', (cb) => {
   });
 });
 
-gulp.task('test:integration', ['docker:run'], () => (
+gulp.task('test:integration', gulp.series('docker:run', () => (
   gulp.src('test/integration.test.js')
     .pipe(mocha({ timeout: 120000 }))
-));
+)));
 
-gulp.task('test', ['lint', 'mocha']);
+gulp.task('test', gulp.series('lint', 'mocha'));
 
 gulp.task('test:watch', () => (
-  gulp.watch(['src/**/*.js', 'test/**/*.test.js'], ['test'])
+  gulp.watch(['src/**/*.js', 'test/**/*.test.js'], gulp.series('test'))
 ));
 
-gulp.task('default', ['build']);
+gulp.task('default', gulp.series('build'));
