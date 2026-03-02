@@ -2,8 +2,8 @@ name: CI & Release
 
 on:
   push:
-    branches: 
-      - zowepkg
+    branches:
+      - master
 
     paths-ignore:
     - 'README.md'
@@ -60,7 +60,7 @@ jobs:
         run: npm run test
 
   release:
-    if: github.event_name == 'push' && github.ref == 'master'
+    if: github.event_name == 'push' && github.ref_protected
     needs: test
     runs-on: ubuntu-latest
     permissions:
@@ -87,13 +87,13 @@ jobs:
     - name: Build Source
       run: npm run prepublish
 
-    # - name: Release with octorelease
-    #   uses: zowe-actions/octorelease@v1
-    #   env:
-    #     GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
-    #     GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
-    #     GIT_CREDENTIALS: x-access-token:${{ secrets.ZOWE_ROBOT_TOKEN }}
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     NPM_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-    #     NPM_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
-    #     NPM_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+    - name: Release
+      uses: zowe-actions/octorelease@v1
+      env:
+        GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
+        GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
+        GIT_CREDENTIALS: x-access-token:${{ secrets.ZOWE_ROBOT_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+        NPM_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+        NPM_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
