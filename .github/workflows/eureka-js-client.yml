@@ -3,7 +3,7 @@ name: CI & Release
 on:
   push:
     branches:
-      - zowepkg
+      - master
 
     paths-ignore:
     - 'README.md'
@@ -60,7 +60,7 @@ jobs:
         run: npm run test
 
   release:
-    #if: github.event_name == 'push' && github.ref_protected
+    if: github.event_name == 'push' && github.ref_protected
     needs: test
     runs-on: ubuntu-latest
     permissions:
