@@ -3,7 +3,7 @@ name: CI & Release
 on:
   push:
     branches:
-      - master
+      - zowepkg
 
     paths-ignore:
     - 'README.md'
