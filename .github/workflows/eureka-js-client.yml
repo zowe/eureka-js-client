@@ -87,21 +87,6 @@ jobs:
     - name: Build Source
       run: npm run prepublish
 
-    - name: Validate Release Secrets
-      shell: bash
-      run: |
-        missing=()
-        [[ -z "${{ secrets.ZOWE_ROBOT_USER }}"      ]] && missing+=("ZOWE_ROBOT_USER")
-        [[ -z "${{ secrets.ZOWE_ROBOT_EMAIL }}"     ]] && missing+=("ZOWE_ROBOT_EMAIL")
-        [[ -z "${{ secrets.ZOWE_ROBOT_TOKEN }}"     ]] && missing+=("ZOWE_ROBOT_TOKEN")
-        [[ -z "${{ secrets.ARTIFACTORY_USERNAME }}" ]] && missing+=("ARTIFACTORY_USERNAME")
-        [[ -z "${{ secrets.ARTIFACTORY_PASSWORD }}" ]] && missing+=("ARTIFACTORY_PASSWORD")
-        if [[ ${#missing[@]} -gt 0 ]]; then
-          echo "::error::The following required secrets are missing: ${missing[*]}"
-          exit 1
-        fi
-        echo "All required secrets are present."
-
     - name: Release
       uses: zowe-actions/octorelease@v1
       env:
