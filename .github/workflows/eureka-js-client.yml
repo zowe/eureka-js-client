@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - zowepkg
 
     paths-ignore:
     - 'README.md'
@@ -89,6 +90,8 @@ jobs:
 
     - name: Release
       uses: zowe-actions/octorelease@v1
+      with:
+        dry-run: true
       env:
         GIT_COMMITTER_NAME: ${{ secrets.ZOWE_ROBOT_USER }}
         GIT_COMMITTER_EMAIL: ${{ secrets.ZOWE_ROBOT_EMAIL }}
