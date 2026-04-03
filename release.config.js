@@ -12,7 +12,7 @@ module.exports = {
     plugins: [
         "@octorelease/changelog",
         ["@octorelease/npm", {
-            smokeTest: true
+            smokeTest: false
         }],
         ["@octorelease/github", {
             checkPrLabels: true
