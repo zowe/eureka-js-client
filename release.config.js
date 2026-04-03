@@ -3,6 +3,10 @@ module.exports = {
         {
             name: "master",
             level: "minor"
+        },
+        {
+            name: "zowepkg",
+            level: "minor"
         }
     ],
     plugins: [
