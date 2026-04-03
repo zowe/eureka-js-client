@@ -9,6 +9,12 @@
     "integration": "gulp test:integration",
     "coveralls": "cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
   },
+  "publishConfig": {
+    "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
+  },
+  "overrides": {
+    "graceful-fs": "^4.2.11"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/zowe/eureka-js-client.git"
@@ -32,16 +38,17 @@
     "lodash": "^4.17.23"
   },
   "devDependencies": {
-    "babel-core": "^6.4.5",
+    "babel-core": "^6.14.0",
     "babel-istanbul": "^0.11.0",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-es2015-loose": "^7.0.0",
+    "babel-register": "^6.14.0",
     "chai": "^3.2.0",
     "coveralls": "^2.11.4",
     "eslint": "^2.13.1",
     "eslint-config-airbnb-base": "^3.0.1",
     "eslint-plugin-import": "^1.10.0",
-    "gulp": "^3.9.0",
+    "gulp": "3.9.0",
     "gulp-babel": "^6.1.1",
     "gulp-env": "^0.4.0",
     "gulp-eslint": "^2.0.0",
